@@ -1,11 +1,12 @@
 import { createClient } from './supabase';
 import { RealtimeChannel } from '@supabase/supabase-js';
+import { Word } from '@/types';
 
 export function subscribeToWords(
   userId: string,
-  onInsert: (word: unknown) => void,
-  onUpdate: (word: unknown) => void,
-  onDelete: (word: unknown) => void
+  onInsert: (word: Partial<Word>) => void,
+  onUpdate: (word: Partial<Word>) => void,
+  onDelete: (word: Partial<Word>) => void
 ): RealtimeChannel {
   const supabase = createClient();
   

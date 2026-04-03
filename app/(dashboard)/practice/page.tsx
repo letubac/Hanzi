@@ -83,7 +83,7 @@ export default function PracticePage() {
       <div className="w-full bg-muted rounded-full h-2 mb-6">
         <div
           className="bg-primary h-2 rounded-full transition-all"
-          style={{ width: `${((currentIndex) / dueWords.length) * 100}%` }}
+          style={{ width: `${dueWords.length > 0 ? (currentIndex / dueWords.length) * 100 : 0}%` }}
         />
       </div>
 
