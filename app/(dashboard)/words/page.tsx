@@ -6,8 +6,7 @@ import { createClient } from '@/lib/supabase';
 import WordCard from '@/components/WordCard';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import { Plus, Search, Loader2, X } from 'lucide-react';
+import { Plus, Search, Loader2, X, BookOpen } from 'lucide-react';
 import { Word } from '@/types';
 
 async function fetchWords(): Promise<Word[]> {
@@ -101,60 +100,81 @@ export default function WordsPage() {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between flex-wrap gap-4">
+    <div className="space-y-5 max-w-2xl mx-auto">
+      {/* Header */}
+      <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">Vocabulary</h1>
-          <p className="text-muted-foreground">{words.length} words saved</p>
+          <h1 className="text-2xl font-bold">Vocabulary</h1>
+          <p className="text-muted-foreground text-sm">{words.length} words saved</p>
         </div>
-        <Button onClick={() => { setShowForm(!showForm); setEditingWord(null); setForm({ word: '', pinyin: '', meaning: '', example: '', note: '' }); }}>
-          <Plus className="h-4 w-4 mr-1" /> Add Word
-        </Button>
+        <button
+          onClick={() => { setShowForm(!showForm); setEditingWord(null); setForm({ word: '', pinyin: '', meaning: '', example: '', note: '' }); }}
+          className="flex items-center gap-1.5 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold rounded-2xl px-4 py-2.5 text-sm transition-colors shadow-sm"
+        >
+          <Plus className="h-4 w-4" /> Add Word
+        </button>
       </div>
 
+      {/* Add/Edit form */}
       {showForm && (
-        <Card>
-          <CardHeader>
-            <CardTitle>{editingWord ? 'Edit Word' : 'Add New Word'}</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleSubmit} className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <Input placeholder="Chinese word (e.g. 你好)" value={form.word} onChange={e => setForm(f => ({...f, word: e.target.value}))} required />
-              <Input placeholder="Pinyin (e.g. nǐ hǎo)" value={form.pinyin} onChange={e => setForm(f => ({...f, pinyin: e.target.value}))} required />
-              <Input placeholder="Meaning (e.g. Hello)" value={form.meaning} onChange={e => setForm(f => ({...f, meaning: e.target.value}))} required />
-              <Input placeholder="Example sentence (optional)" value={form.example} onChange={e => setForm(f => ({...f, example: e.target.value}))} />
-              <Input placeholder="Note (optional)" value={form.note} onChange={e => setForm(f => ({...f, note: e.target.value}))} className="sm:col-span-2" />
-              <div className="sm:col-span-2 flex gap-2">
-                <Button type="submit" disabled={addMutation.isPending || updateMutation.isPending}>
-                  {(addMutation.isPending || updateMutation.isPending) && <Loader2 className="h-4 w-4 animate-spin mr-1" />}
-                  {editingWord ? 'Update' : 'Add Word'}
-                </Button>
-                <Button type="button" variant="outline" onClick={() => setShowForm(false)}>Cancel</Button>
-              </div>
-            </form>
-          </CardContent>
-        </Card>
+        <div className="bg-card rounded-2xl border border-border shadow-sm p-5">
+          <h2 className="font-bold mb-4">{editingWord ? 'Edit Word' : 'Add New Word'}</h2>
+          <form onSubmit={handleSubmit} className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <Input placeholder="Chinese word (e.g. 你好)" value={form.word} onChange={e => setForm(f => ({...f, word: e.target.value}))} required className="rounded-xl" />
+            <Input placeholder="Pinyin (e.g. nǐ hǎo)" value={form.pinyin} onChange={e => setForm(f => ({...f, pinyin: e.target.value}))} required className="rounded-xl" />
+            <Input placeholder="Meaning (e.g. Hello)" value={form.meaning} onChange={e => setForm(f => ({...f, meaning: e.target.value}))} required className="rounded-xl" />
+            <Input placeholder="Example sentence (optional)" value={form.example} onChange={e => setForm(f => ({...f, example: e.target.value}))} className="rounded-xl" />
+            <Input placeholder="Note (optional)" value={form.note} onChange={e => setForm(f => ({...f, note: e.target.value}))} className="sm:col-span-2 rounded-xl" />
+            <div className="sm:col-span-2 flex gap-2">
+              <Button type="submit" disabled={addMutation.isPending || updateMutation.isPending} className="rounded-xl">
+                {(addMutation.isPending || updateMutation.isPending) && <Loader2 className="h-4 w-4 animate-spin mr-1" />}
+                {editingWord ? 'Update' : 'Add Word'}
+              </Button>
+              <Button type="button" variant="outline" onClick={() => setShowForm(false)} className="rounded-xl">Cancel</Button>
+            </div>
+          </form>
+        </div>
       )}
 
-      <div className="flex gap-3 flex-wrap">
-        <div className="relative flex-1 min-w-[200px]">
-          <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-          <Input placeholder="Search words..." value={search} onChange={e => setSearch(e.target.value)} className="pl-10" />
-          {search && <button onClick={() => setSearch('')} className="absolute right-3 top-3"><X className="h-4 w-4 text-muted-foreground" /></button>}
+      {/* Search + filter */}
+      <div className="flex gap-2">
+        <div className="relative flex-1">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Input
+            placeholder="Search words..."
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+            className="pl-9 rounded-xl"
+          />
+          {search && (
+            <button onClick={() => setSearch('')} className="absolute right-3 top-1/2 -translate-y-1/2">
+              <X className="h-4 w-4 text-muted-foreground" />
+            </button>
+          )}
         </div>
-        <Button variant={filterDue ? 'default' : 'outline'} onClick={() => setFilterDue(!filterDue)}>
+        <button
+          onClick={() => setFilterDue(!filterDue)}
+          className={`px-3.5 py-2 rounded-xl text-sm font-semibold border transition-colors ${
+            filterDue
+              ? 'bg-primary text-primary-foreground border-primary'
+              : 'bg-card text-foreground border-border hover:bg-muted'
+          }`}
+        >
           Due Today
-        </Button>
+        </button>
       </div>
 
+      {/* Words list */}
       {isLoading ? (
-        <div className="flex justify-center py-12"><Loader2 className="h-8 w-8 animate-spin text-muted-foreground" /></div>
+        <div className="flex justify-center py-16"><Loader2 className="h-8 w-8 animate-spin text-muted-foreground" /></div>
       ) : filtered.length === 0 ? (
-        <div className="text-center py-12 text-muted-foreground">
-          {words.length === 0 ? "No words yet. Add your first word!" : "No matching words found."}
+        <div className="text-center py-16 text-muted-foreground">
+          <BookOpen className="h-12 w-12 mx-auto mb-3 opacity-30" />
+          <p className="font-medium">{words.length === 0 ? 'No words yet' : 'No matching words'}</p>
+          <p className="text-sm mt-1">{words.length === 0 ? 'Add your first word to get started!' : 'Try a different search.'}</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {filtered.map(word => (
             <WordCard key={word.id} word={word} onDelete={(id) => deleteMutation.mutate(id)} onEdit={handleEdit} />
           ))}
