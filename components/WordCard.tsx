@@ -1,9 +1,8 @@
 'use client';
 import { Word } from '@/types';
-import { Card, CardHeader, CardTitle, CardContent } from './ui/card';
 import { Badge } from './ui/badge';
 import { Button } from './ui/button';
-import { Volume2, Trash2, Edit } from 'lucide-react';
+import { Volume2, Trash2, Edit, Clock } from 'lucide-react';
 
 interface WordCardProps {
   word: Word;
@@ -23,39 +22,56 @@ export default function WordCard({ word, onDelete, onEdit }: WordCardProps) {
   const isDue = new Date(word.next_review) <= new Date();
 
   return (
-    <Card className="hover:shadow-md transition-shadow">
-      <CardHeader className="pb-2">
-        <div className="flex items-start justify-between">
-          <div>
-            <CardTitle className="text-3xl font-bold text-primary">{word.word}</CardTitle>
-            <p className="text-muted-foreground text-sm mt-1">{word.pinyin}</p>
+    <div className="bg-card rounded-2xl shadow-sm border border-border overflow-hidden hover:shadow-md transition-shadow">
+      <div className="p-4">
+        <div className="flex items-start justify-between mb-3">
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="text-3xl font-bold text-primary leading-tight">{word.word}</span>
+              {isDue && (
+                <Badge variant="destructive" className="text-[10px] font-semibold rounded-full px-2">
+                  <Clock className="h-2.5 w-2.5 mr-0.5" />Due
+                </Badge>
+              )}
+            </div>
+            <p className="text-muted-foreground text-sm mt-0.5">{word.pinyin}</p>
           </div>
-          <div className="flex flex-col items-end gap-1">
-            {isDue && <Badge variant="destructive" className="text-xs">Due</Badge>}
-            <Badge variant="outline" className="text-xs">×{word.repetitions}</Badge>
+          <div className="flex items-center gap-1.5 ml-2 shrink-0">
+            <button
+              onClick={speakWord}
+              className="w-8 h-8 rounded-xl bg-primary/10 hover:bg-primary/20 flex items-center justify-center transition-colors"
+            >
+              <Volume2 className="h-4 w-4 text-primary" />
+            </button>
           </div>
         </div>
-      </CardHeader>
-      <CardContent>
-        <p className="font-medium">{word.meaning}</p>
-        {word.example && <p className="text-sm text-muted-foreground mt-2 italic">{word.example}</p>}
-        {word.note && <p className="text-sm text-muted-foreground mt-1">📝 {word.note}</p>}
-        <div className="flex gap-2 mt-4">
-          <Button variant="outline" size="sm" onClick={speakWord}>
-            <Volume2 className="h-4 w-4 mr-1" /> Play
-          </Button>
+
+        <p className="font-semibold text-foreground text-sm">{word.meaning}</p>
+        {word.example && (
+          <p className="text-xs text-muted-foreground mt-1.5 italic bg-muted rounded-lg px-2.5 py-1.5">
+            {word.example}
+          </p>
+        )}
+        {word.note && (
+          <p className="text-xs text-muted-foreground mt-1.5">📝 {word.note}</p>
+        )}
+      </div>
+
+      <div className="border-t border-border px-4 py-2.5 flex items-center justify-between bg-muted/30">
+        <span className="text-xs text-muted-foreground">Rep ×{word.repetitions}</span>
+        <div className="flex gap-1.5">
           {onEdit && (
-            <Button variant="outline" size="sm" onClick={() => onEdit(word)}>
-              <Edit className="h-4 w-4 mr-1" /> Edit
+            <Button variant="ghost" size="sm" onClick={() => onEdit(word)} className="h-7 px-2.5 text-xs rounded-lg">
+              <Edit className="h-3 w-3 mr-1" />Edit
             </Button>
           )}
           {onDelete && (
-            <Button variant="destructive" size="sm" onClick={() => onDelete(word.id)}>
-              <Trash2 className="h-4 w-4 mr-1" /> Delete
+            <Button variant="ghost" size="sm" onClick={() => onDelete(word.id)} className="h-7 px-2.5 text-xs rounded-lg text-destructive hover:text-destructive hover:bg-destructive/10">
+              <Trash2 className="h-3 w-3 mr-1" />Delete
             </Button>
           )}
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 }

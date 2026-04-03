@@ -22,8 +22,8 @@ export default function ProgressChart({ data }: ProgressChartProps) {
         <YAxis tick={{ fontSize: 12 }} />
         <Tooltip />
         <Legend />
-        <Line type="monotone" dataKey="words" stroke="#8884d8" name="Words Learned" strokeWidth={2} />
-        <Line type="monotone" dataKey="reviews" stroke="#82ca9d" name="Reviews" strokeWidth={2} />
+        <Line type="monotone" dataKey="words" stroke="#dc2626" name="Words Learned" strokeWidth={2} dot={false} />
+        <Line type="monotone" dataKey="reviews" stroke="#f59e0b" name="Reviews" strokeWidth={2} dot={false} />
       </LineChart>
     </ResponsiveContainer>
   );

@@ -1,14 +1,19 @@
 'use client';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { signOut } from '@/lib/auth';
-import { Button } from './ui/button';
-import { BookOpen, LogOut, Menu } from 'lucide-react';
-import { useState } from 'react';
+import { LayoutDashboard, BookOpen, MessageSquare, Zap, LogOut } from 'lucide-react';
+
+const navItems = [
+  { href: '/dashboard', label: 'Home', icon: LayoutDashboard },
+  { href: '/words', label: 'Words', icon: BookOpen },
+  { href: '/sentences', label: 'Sentences', icon: MessageSquare },
+  { href: '/practice', label: 'Practice', icon: Zap },
+];
 
 export default function Navbar() {
   const router = useRouter();
-  const [menuOpen, setMenuOpen] = useState(false);
+  const pathname = usePathname();
 
   const handleSignOut = async () => {
     await signOut();
@@ -16,36 +21,71 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
-      <div className="container flex h-16 items-center justify-between px-4">
-        <Link href="/dashboard" className="flex items-center gap-2 font-bold text-xl">
-          <BookOpen className="h-6 w-6 text-primary" />
-          <span>汉字学习</span>
-        </Link>
-        <div className="hidden md:flex items-center gap-6">
-          <Link href="/dashboard" className="text-sm font-medium hover:text-primary transition-colors">Dashboard</Link>
-          <Link href="/words" className="text-sm font-medium hover:text-primary transition-colors">Words</Link>
-          <Link href="/sentences" className="text-sm font-medium hover:text-primary transition-colors">Sentences</Link>
-          <Link href="/practice" className="text-sm font-medium hover:text-primary transition-colors">Practice</Link>
-          <Button variant="ghost" size="sm" onClick={handleSignOut}>
-            <LogOut className="h-4 w-4 mr-1" /> Sign Out
-          </Button>
+    <>
+      {/* Top header */}
+      <header className="sticky top-0 z-50 bg-primary text-primary-foreground shadow-md">
+        <div className="container flex h-14 items-center justify-between px-4">
+          <Link href="/dashboard" className="flex items-center gap-2 font-bold text-lg tracking-wide">
+            <span className="text-2xl leading-none">汉</span>
+            <span>SuperHanzi</span>
+          </Link>
+          {/* Desktop nav */}
+          <nav className="hidden md:flex items-center gap-1">
+            {navItems.map(({ href, label, icon: Icon }) => {
+              const active = pathname === href;
+              return (
+                <Link
+                  key={href}
+                  href={href}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+                    active
+                      ? 'bg-white/20 text-white'
+                      : 'text-white/80 hover:bg-white/10 hover:text-white'
+                  }`}
+                >
+                  <Icon className="h-4 w-4" />
+                  {label}
+                </Link>
+              );
+            })}
+          </nav>
+          <button
+            onClick={handleSignOut}
+            className="hidden md:flex items-center gap-1.5 text-sm text-white/80 hover:text-white transition-colors"
+          >
+            <LogOut className="h-4 w-4" />
+            Sign Out
+          </button>
         </div>
-        <Button variant="ghost" size="icon" className="md:hidden" onClick={() => setMenuOpen(!menuOpen)}>
-          <Menu className="h-5 w-5" />
-        </Button>
-      </div>
-      {menuOpen && (
-        <div className="md:hidden border-t p-4 flex flex-col gap-3">
-          <Link href="/dashboard" className="text-sm font-medium" onClick={() => setMenuOpen(false)}>Dashboard</Link>
-          <Link href="/words" className="text-sm font-medium" onClick={() => setMenuOpen(false)}>Words</Link>
-          <Link href="/sentences" className="text-sm font-medium" onClick={() => setMenuOpen(false)}>Sentences</Link>
-          <Link href="/practice" className="text-sm font-medium" onClick={() => setMenuOpen(false)}>Practice</Link>
-          <Button variant="ghost" size="sm" onClick={handleSignOut} className="justify-start">
-            <LogOut className="h-4 w-4 mr-1" /> Sign Out
-          </Button>
+      </header>
+
+      {/* Mobile bottom navigation */}
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-border shadow-lg">
+        <div className="flex items-center justify-around h-16 px-2">
+          {navItems.map(({ href, label, icon: Icon }) => {
+            const active = pathname === href;
+            return (
+              <Link
+                key={href}
+                href={href}
+                className={`flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl transition-colors ${
+                  active ? 'text-primary' : 'text-muted-foreground'
+                }`}
+              >
+                <Icon className={`h-5 w-5 ${active ? 'stroke-[2.5]' : ''}`} />
+                <span className={`text-[10px] font-medium ${active ? 'text-primary' : ''}`}>{label}</span>
+              </Link>
+            );
+          })}
+          <button
+            onClick={handleSignOut}
+            className="flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl text-muted-foreground"
+          >
+            <LogOut className="h-5 w-5" />
+            <span className="text-[10px] font-medium">Sign Out</span>
+          </button>
         </div>
-      )}
-    </nav>
+      </nav>
+    </>
   );
 }

@@ -5,8 +5,7 @@ import Link from 'next/link';
 import { signIn } from '@/lib/auth';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import { BookOpen, Loader2 } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -30,37 +29,87 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
-      <Card className="w-full max-w-md">
-        <CardHeader className="text-center">
-          <div className="flex justify-center mb-2">
-            <BookOpen className="h-10 w-10 text-primary" />
+    <div className="min-h-screen flex flex-col items-center justify-center relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #dc2626 0%, #991b1b 50%, #7f1d1d 100%)' }}>
+      {/* Decorative background characters */}
+      <div className="absolute inset-0 pointer-events-none select-none overflow-hidden">
+        {['汉', '语', '学', '习', '中', '文', '字', '词'].map((char, i) => (
+          <span
+            key={i}
+            className="absolute text-white/5 font-bold"
+            style={{
+              fontSize: `${80 + (i % 3) * 40}px`,
+              top: `${(i * 17 + 5) % 90}%`,
+              left: `${(i * 23 + 3) % 90}%`,
+              transform: `rotate(${(i % 2 === 0 ? 1 : -1) * (i * 7 % 20)}deg)`,
+            }}
+          >
+            {char}
+          </span>
+        ))}
+      </div>
+
+      <div className="relative z-10 w-full max-w-sm px-4">
+        {/* Logo */}
+        <div className="text-center mb-8">
+          <div className="inline-flex items-center justify-center w-20 h-20 rounded-3xl bg-white/10 backdrop-blur-sm border border-white/20 mb-4">
+            <span className="text-4xl font-bold text-white">汉</span>
           </div>
-          <CardTitle className="text-2xl">Welcome Back</CardTitle>
-          <p className="text-muted-foreground">Sign in to continue learning</p>
-        </CardHeader>
-        <CardContent>
+          <h1 className="text-3xl font-bold text-white">SuperHanzi</h1>
+          <p className="text-white/70 mt-1 text-sm">The Chinese Learning Super App</p>
+        </div>
+
+        {/* Form card */}
+        <div className="bg-white rounded-3xl p-6 shadow-2xl">
+          <h2 className="text-xl font-bold text-center mb-1 text-foreground">Welcome Back!</h2>
+          <p className="text-center text-sm text-muted-foreground mb-5">Sign in to continue your journey</p>
+
           <form onSubmit={handleSubmit} className="space-y-4">
-            {error && <div className="bg-destructive/10 text-destructive text-sm p-3 rounded-md">{error}</div>}
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Email</label>
-              <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" required />
+            {error && (
+              <div className="bg-red-50 text-red-600 text-sm p-3 rounded-xl border border-red-100">
+                {error}
+              </div>
+            )}
+            <div className="space-y-1.5">
+              <label className="text-sm font-semibold text-gray-700">Email</label>
+              <Input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="you@example.com"
+                required
+                className="h-12 rounded-xl border-gray-200 focus:border-primary"
+              />
             </div>
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Password</label>
-              <Input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" required />
+            <div className="space-y-1.5">
+              <label className="text-sm font-semibold text-gray-700">Password</label>
+              <Input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="••••••••"
+                required
+                className="h-12 rounded-xl border-gray-200 focus:border-primary"
+              />
             </div>
-            <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
+            <Button
+              type="submit"
+              className="w-full h-12 rounded-xl text-base font-semibold mt-2"
+              disabled={loading}
+              style={{ background: 'linear-gradient(135deg, #dc2626, #b91c1c)' }}
+            >
+              {loading ? <Loader2 className="h-5 w-5 animate-spin mr-2" /> : null}
               Sign In
             </Button>
-            <p className="text-center text-sm text-muted-foreground">
-              Don&apos;t have an account?{' '}
-              <Link href="/register" className="text-primary hover:underline">Register</Link>
-            </p>
           </form>
-        </CardContent>
-      </Card>
+
+          <p className="text-center text-sm text-muted-foreground mt-4">
+            New to SuperHanzi?{' '}
+            <Link href="/register" className="text-primary font-semibold hover:underline">
+              Create account
+            </Link>
+          </p>
+        </div>
+      </div>
     </div>
   );
 }

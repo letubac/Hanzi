@@ -3,8 +3,7 @@ import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import { Plus, Loader2, Trash2, Volume2 } from 'lucide-react';
+import { Plus, Loader2, Trash2, Volume2, MessageSquare } from 'lucide-react';
 import { Sentence } from '@/types';
 
 async function fetchSentences(): Promise<Sentence[]> {
@@ -57,65 +56,82 @@ export default function SentencesPage() {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between flex-wrap gap-4">
+    <div className="space-y-5 max-w-2xl mx-auto">
+      {/* Header */}
+      <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">Sentences</h1>
-          <p className="text-muted-foreground">{sentences.length} sentences saved</p>
+          <h1 className="text-2xl font-bold">Sentences</h1>
+          <p className="text-muted-foreground text-sm">{sentences.length} sentences saved</p>
         </div>
-        <Button onClick={() => setShowForm(!showForm)}>
-          <Plus className="h-4 w-4 mr-1" /> Add Sentence
-        </Button>
+        <button
+          onClick={() => setShowForm(!showForm)}
+          className="flex items-center gap-1.5 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold rounded-2xl px-4 py-2.5 text-sm transition-colors shadow-sm"
+        >
+          <Plus className="h-4 w-4" /> Add Sentence
+        </button>
       </div>
 
+      {/* Add form */}
       {showForm && (
-        <Card>
-          <CardHeader><CardTitle>Add New Sentence</CardTitle></CardHeader>
-          <CardContent>
-            <form onSubmit={(e) => { e.preventDefault(); addMutation.mutate(form); }} className="space-y-3">
-              <Input placeholder="Chinese sentence" value={form.sentence} onChange={e => setForm(f => ({...f, sentence: e.target.value}))} required />
-              <Input placeholder="Pinyin" value={form.pinyin} onChange={e => setForm(f => ({...f, pinyin: e.target.value}))} required />
-              <Input placeholder="Meaning" value={form.meaning} onChange={e => setForm(f => ({...f, meaning: e.target.value}))} required />
-              <Input placeholder="Note (optional)" value={form.note} onChange={e => setForm(f => ({...f, note: e.target.value}))} />
-              <div className="flex gap-2">
-                <Button type="submit" disabled={addMutation.isPending}>
-                  {addMutation.isPending && <Loader2 className="h-4 w-4 animate-spin mr-1" />}
-                  Add Sentence
-                </Button>
-                <Button type="button" variant="outline" onClick={() => setShowForm(false)}>Cancel</Button>
-              </div>
-            </form>
-          </CardContent>
-        </Card>
+        <div className="bg-card rounded-2xl border border-border shadow-sm p-5">
+          <h2 className="font-bold mb-4">Add New Sentence</h2>
+          <form
+            onSubmit={(e) => { e.preventDefault(); addMutation.mutate(form); }}
+            className="space-y-3"
+          >
+            <Input placeholder="Chinese sentence" value={form.sentence} onChange={e => setForm(f => ({...f, sentence: e.target.value}))} required className="rounded-xl" />
+            <Input placeholder="Pinyin" value={form.pinyin} onChange={e => setForm(f => ({...f, pinyin: e.target.value}))} required className="rounded-xl" />
+            <Input placeholder="Meaning" value={form.meaning} onChange={e => setForm(f => ({...f, meaning: e.target.value}))} required className="rounded-xl" />
+            <Input placeholder="Note (optional)" value={form.note} onChange={e => setForm(f => ({...f, note: e.target.value}))} className="rounded-xl" />
+            <div className="flex gap-2">
+              <Button type="submit" disabled={addMutation.isPending} className="rounded-xl">
+                {addMutation.isPending && <Loader2 className="h-4 w-4 animate-spin mr-1" />}
+                Add Sentence
+              </Button>
+              <Button type="button" variant="outline" onClick={() => setShowForm(false)} className="rounded-xl">Cancel</Button>
+            </div>
+          </form>
+        </div>
       )}
 
+      {/* List */}
       {isLoading ? (
-        <div className="flex justify-center py-12"><Loader2 className="h-8 w-8 animate-spin text-muted-foreground" /></div>
+        <div className="flex justify-center py-16"><Loader2 className="h-8 w-8 animate-spin text-muted-foreground" /></div>
       ) : sentences.length === 0 ? (
-        <div className="text-center py-12 text-muted-foreground">No sentences yet. Add your first sentence!</div>
+        <div className="text-center py-16 text-muted-foreground">
+          <MessageSquare className="h-12 w-12 mx-auto mb-3 opacity-30" />
+          <p className="font-medium">No sentences yet</p>
+          <p className="text-sm mt-1">Add your first sentence to get started!</p>
+        </div>
       ) : (
-        <div className="space-y-4">
+        <div className="space-y-3">
           {sentences.map(s => (
-            <Card key={s.id}>
-              <CardContent className="pt-6">
+            <div key={s.id} className="bg-card rounded-2xl border border-border shadow-sm overflow-hidden">
+              <div className="p-4">
                 <div className="flex items-start justify-between gap-4">
-                  <div className="flex-1">
-                    <p className="text-2xl font-bold text-primary">{s.sentence}</p>
-                    <p className="text-muted-foreground mt-1">{s.pinyin}</p>
-                    <p className="font-medium mt-2">{s.meaning}</p>
-                    {s.note && <p className="text-sm text-muted-foreground mt-1">📝 {s.note}</p>}
+                  <div className="flex-1 min-w-0">
+                    <p className="text-2xl font-bold text-primary leading-tight">{s.sentence}</p>
+                    <p className="text-muted-foreground text-sm mt-1">{s.pinyin}</p>
+                    <p className="font-semibold text-sm mt-2">{s.meaning}</p>
+                    {s.note && <p className="text-xs text-muted-foreground mt-1.5 bg-muted rounded-lg px-2.5 py-1.5">📝 {s.note}</p>}
                   </div>
-                  <div className="flex gap-2">
-                    <Button variant="outline" size="icon" onClick={() => speak(s.sentence)}>
-                      <Volume2 className="h-4 w-4" />
-                    </Button>
-                    <Button variant="destructive" size="icon" onClick={() => deleteMutation.mutate(s.id)}>
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
+                  <div className="flex flex-col gap-1.5 shrink-0">
+                    <button
+                      onClick={() => speak(s.sentence)}
+                      className="w-9 h-9 rounded-xl bg-primary/10 hover:bg-primary/20 flex items-center justify-center transition-colors"
+                    >
+                      <Volume2 className="h-4 w-4 text-primary" />
+                    </button>
+                    <button
+                      onClick={() => deleteMutation.mutate(s.id)}
+                      className="w-9 h-9 rounded-xl bg-red-50 hover:bg-red-100 flex items-center justify-center transition-colors"
+                    >
+                      <Trash2 className="h-4 w-4 text-red-500" />
+                    </button>
                   </div>
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
           ))}
         </div>
       )}
