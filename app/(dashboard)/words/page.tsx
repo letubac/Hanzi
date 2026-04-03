@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useRealtimeWords } from '@/hooks/useRealtimeWords';
 import { createClient } from '@/lib/supabase';
@@ -26,9 +26,10 @@ export default function WordsPage() {
   const [editingWord, setEditingWord] = useState<Word | null>(null);
   const [filterDue, setFilterDue] = useState(false);
 
-  useState(() => {
+  useEffect(() => {
     supabase.auth.getUser().then(({ data }) => setUserId(data.user?.id));
-  });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useRealtimeWords(userId);
 

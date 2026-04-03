@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Button } from './ui/button';
 import { Play, Pause } from 'lucide-react';
 
@@ -9,9 +9,22 @@ interface AudioPlayerProps {
 
 export default function AudioPlayer({ src }: AudioPlayerProps) {
   const [playing, setPlaying] = useState(false);
-  const [audio] = useState(() => typeof window !== 'undefined' ? new Audio(src) : null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  useEffect(() => {
+    const audio = typeof window !== 'undefined' ? new Audio(src) : null;
+    audioRef.current = audio;
+    if (audio) {
+      audio.onended = () => setPlaying(false);
+    }
+    return () => {
+      audio?.pause();
+      audioRef.current = null;
+    };
+  }, [src]);
 
   const toggle = () => {
+    const audio = audioRef.current;
     if (!audio) return;
     if (playing) {
       audio.pause();
@@ -19,7 +32,6 @@ export default function AudioPlayer({ src }: AudioPlayerProps) {
       audio.play();
     }
     setPlaying(!playing);
-    audio.onended = () => setPlaying(false);
   };
 
   return (

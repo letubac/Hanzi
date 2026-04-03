@@ -36,7 +36,7 @@ export default async function DashboardPage() {
       const created = new Date(w.created_at);
       return created.toDateString() === d.toDateString();
     }).length;
-    return { date: dateStr, words: dayWords, reviews: Math.floor(Math.random() * 5) };
+    return { date: dateStr, words: dayWords, reviews: 0 };
   });
 
   return (

@@ -5,7 +5,6 @@ import { Mic, MicOff, RotateCcw, Upload } from 'lucide-react';
 
 interface RecorderProps {
   onUpload?: (blob: Blob, audioUrl: string) => void;
-  wordId?: string;
 }
 
 export default function Recorder({ onUpload }: RecorderProps) {
