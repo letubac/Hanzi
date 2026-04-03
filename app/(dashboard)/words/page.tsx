@@ -18,7 +18,6 @@ async function fetchWords(): Promise<Word[]> {
 
 export default function WordsPage() {
   const queryClient = useQueryClient();
-  const supabase = createClient();
   const [userId, setUserId] = useState<string | undefined>();
   const [search, setSearch] = useState('');
   const [showForm, setShowForm] = useState(false);
@@ -27,8 +26,8 @@ export default function WordsPage() {
   const [filterDue, setFilterDue] = useState(false);
 
   useEffect(() => {
-    supabase.auth.getUser().then(({ data }) => setUserId(data.user?.id));
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    const client = createClient();
+    client.auth.getUser().then(({ data }) => setUserId(data.user?.id));
   }, []);
 
   useRealtimeWords(userId);
