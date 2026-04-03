@@ -72,7 +72,7 @@ export default async function DashboardPage() {
   return (
     <div className="space-y-6 max-w-2xl mx-auto">
       {/* Welcome banner */}
-      <div className="relative rounded-3xl overflow-hidden shadow-lg" style={{ background: 'linear-gradient(135deg, #dc2626 0%, #b91c1c 60%, #7f1d1d 100%)' }}>
+      <div className="relative rounded-3xl overflow-hidden shadow-lg" style={{ background: 'linear-gradient(135deg, #0a2744 0%, #0f3460 60%, #1a4a7a 100%)', border: '1px solid rgba(0,200,212,0.2)' }}>
         <div className="absolute right-0 top-0 bottom-0 flex items-center pr-4 select-none pointer-events-none">
           <span className="text-white/10 font-bold" style={{ fontSize: '100px', lineHeight: 1 }}>学</span>
         </div>
@@ -81,12 +81,12 @@ export default async function DashboardPage() {
           <h1 className="text-2xl font-bold text-white capitalize">{username} 👋</h1>
           <p className="text-white/80 text-sm mt-1">Keep up the great work!</p>
           <div className="flex items-center gap-4 mt-4">
-            <div className="flex items-center gap-1.5 bg-white/15 rounded-2xl px-3 py-1.5">
-              <Flame className="h-4 w-4 text-amber-300" />
+            <div className="flex items-center gap-1.5 bg-white/10 rounded-2xl px-3 py-1.5">
+              <Flame className="h-4 w-4 text-cyan-300" />
               <span className="text-white text-sm font-semibold">1 day streak</span>
             </div>
-            <div className="flex items-center gap-1.5 bg-white/15 rounded-2xl px-3 py-1.5">
-              <TrendingUp className="h-4 w-4 text-green-300" />
+            <div className="flex items-center gap-1.5 bg-white/10 rounded-2xl px-3 py-1.5">
+              <TrendingUp className="h-4 w-4 text-cyan-300" />
               <span className="text-white text-sm font-semibold">{avgScore}% score</span>
             </div>
           </div>
@@ -95,19 +95,20 @@ export default async function DashboardPage() {
 
       {/* Today's goal */}
       {dueToday > 0 && (
-        <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4 flex items-center justify-between">
+        <div className="rounded-2xl p-4 flex items-center justify-between border border-cyan-500/20" style={{ background: 'rgba(0,200,212,0.08)' }}>
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-amber-500 flex items-center justify-center">
+            <div className="w-10 h-10 rounded-2xl flex items-center justify-center" style={{ background: 'linear-gradient(135deg,#00C8D4,#0891B2)' }}>
               <Calendar className="h-5 w-5 text-white" />
             </div>
             <div>
-              <p className="font-semibold text-amber-900">Review due today</p>
-              <p className="text-sm text-amber-700">{dueToday} cards waiting for you</p>
+              <p className="font-semibold text-white">Review due today</p>
+              <p className="text-sm text-white/60">{dueToday} cards waiting for you</p>
             </div>
           </div>
           <Link
             href="/practice"
-            className="bg-amber-500 hover:bg-amber-600 text-white text-sm font-semibold px-4 py-2 rounded-xl transition-colors"
+            className="text-white text-sm font-semibold px-4 py-2 rounded-xl transition-all hover:opacity-80"
+            style={{ background: 'linear-gradient(135deg,#00C8D4,#0891B2)' }}
           >
             Start →
           </Link>
@@ -116,7 +117,7 @@ export default async function DashboardPage() {
 
       {/* Feature cards */}
       <div>
-        <h2 className="text-base font-bold text-foreground mb-3">Learning Modules</h2>
+        <h2 className="text-base font-bold text-white mb-3">Learning Modules</h2>
         <div className="grid grid-cols-2 gap-3">
           {features.map(({ href, icon: Icon, label, sub, gradient, char }) => (
             <Link
@@ -142,20 +143,20 @@ export default async function DashboardPage() {
       {/* Stats row */}
       <div className="grid grid-cols-3 gap-3">
         {[
-          { value: words.length, label: 'Total Words', color: 'text-red-600' },
-          { value: dueToday, label: 'Due Today', color: 'text-amber-600' },
-          { value: `${avgScore}%`, label: 'Avg Score', color: 'text-emerald-600' },
+          { value: words.length, label: 'Total Words', color: 'text-cyan-400' },
+          { value: dueToday, label: 'Due Today', color: 'text-sky-400' },
+          { value: `${avgScore}%`, label: 'Avg Score', color: 'text-teal-400' },
         ].map(({ value, label, color }) => (
-          <div key={label} className="bg-card rounded-2xl p-3 text-center shadow-sm border border-border">
+          <div key={label} className="rounded-2xl p-3 text-center border border-white/10" style={{ background: 'rgba(15,37,64,0.6)' }}>
             <p className={`text-2xl font-bold ${color}`}>{value}</p>
-            <p className="text-xs text-muted-foreground mt-0.5">{label}</p>
+            <p className={`text-xs text-white/50 mt-0.5`}>{label}</p>
           </div>
         ))}
       </div>
 
       {/* 7-day progress chart */}
-      <div className="bg-card rounded-2xl p-4 shadow-sm border border-border">
-        <h2 className="font-bold text-sm mb-4">7-Day Progress</h2>
+      <div className="rounded-2xl p-4 border border-white/10" style={{ background: 'rgba(15,37,64,0.6)' }}>
+        <h2 className="font-bold text-sm mb-4 text-white">7-Day Progress</h2>
         <DashboardCharts data={chartData} />
       </div>
     </div>

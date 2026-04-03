@@ -23,10 +23,15 @@ export default function Navbar() {
   return (
     <>
       {/* Top header */}
-      <header className="sticky top-0 z-50 bg-primary text-primary-foreground shadow-md">
+      <header className="sticky top-0 z-50 border-b border-white/10 shadow-md" style={{ background: '#081628' }}>
         <div className="container flex h-14 items-center justify-between px-4">
-          <Link href="/dashboard" className="flex items-center gap-2 font-bold text-lg tracking-wide">
-            <span className="text-2xl leading-none">汉</span>
+          <Link href="/dashboard" className="flex items-center gap-2 font-bold text-lg tracking-wide text-white">
+            <span
+              className="w-8 h-8 rounded-xl flex items-center justify-center text-sm font-bold text-white"
+              style={{ background: 'linear-gradient(135deg,#00C8D4,#0891B2)' }}
+            >
+              汉
+            </span>
             <span>SuperHanzi</span>
           </Link>
           {/* Desktop nav */}
@@ -60,7 +65,7 @@ export default function Navbar() {
       </header>
 
       {/* Mobile bottom navigation */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-border shadow-lg">
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 border-t border-white/10 shadow-lg" style={{ background: '#081628' }}>
         <div className="flex items-center justify-around h-16 px-2">
           {navItems.map(({ href, label, icon: Icon }) => {
             const active = pathname === href;
@@ -69,17 +74,17 @@ export default function Navbar() {
                 key={href}
                 href={href}
                 className={`flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl transition-colors ${
-                  active ? 'text-primary' : 'text-muted-foreground'
+                  active ? 'text-cyan-400' : 'text-white/50'
                 }`}
               >
                 <Icon className={`h-5 w-5 ${active ? 'stroke-[2.5]' : ''}`} />
-                <span className={`text-[10px] font-medium ${active ? 'text-primary' : ''}`}>{label}</span>
+                <span className={`text-[10px] font-medium ${active ? 'text-cyan-400' : ''}`}>{label}</span>
               </Link>
             );
           })}
           <button
             onClick={handleSignOut}
-            className="flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl text-muted-foreground"
+            className="flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl text-white/50"
           >
             <LogOut className="h-5 w-5" />
             <span className="text-[10px] font-medium">Sign Out</span>

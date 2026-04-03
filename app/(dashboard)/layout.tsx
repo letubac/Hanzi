@@ -11,7 +11,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen" style={{ background: '#081628' }}>
       <Navbar />
       <main className="container mx-auto px-4 py-6 pb-24 md:pb-8">
         {children}
